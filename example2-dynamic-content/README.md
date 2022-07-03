@@ -31,9 +31,8 @@ sudo sh -c "echo ':APE:M::MZqFpD::/bin/sh:' >/proc/sys/fs/binfmt_misc/register"
 ```
 
 * Modify .init.lua. Use the .init.lua that is here, in the example.
-* Modify .lua/dynamic.lua. Uwd the lua file that is here, in the example.
-
-* Create file abc.html with some dummy text. (Optional, done for example 1)
+* Add .lua/dynamic.lua. Use the lua file that is here, in the example.
+* Keep file abc.html to show static files still work.
 * Add the files to the redbean.com zip file.
 ```
 zip redbean.com abc.html .init.lua .lua/*
