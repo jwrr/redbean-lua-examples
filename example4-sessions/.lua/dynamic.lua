@@ -5,7 +5,7 @@ local dynamic = {}
 
 -- The cookie module wraps the Redbean's GetCookie and SetCookie
 
-local cookie = require"cookie"
+local session = require"session"
 
 
 -- function that returns true if the path is a valid dynamic page.
@@ -21,10 +21,10 @@ function dynamic.isValidDynamicPath()
   if path:find('^/$') then return true end
   
   -- This pattern matches any path starting with '/one'
-  if path:find('^/one') then return true end
+  if path:find('^/login') then return true end
   
   -- This pattern matches any path starting with '/two'
-  if path:find('^/two') then return true end
+  if path:find('^/logout') then return true end
   
   -- For this example, any other path is not valid
   return false;
@@ -34,20 +34,21 @@ end
 
 -- function that returns html string containing the webpage content
 function dynamic.page()
+  page = GetPath()
+  if page:find('^/login') then return session.page() end
 
-  local old_cookie = cookie.get()
-  
-  local new_cookie = "No Change"
-  if not cookie.exists() then
-    new_cookie = cookie.set()
---  new_cookie = EncodeBase64(GetRandomBytes(48))
---  local t = { MaxAge = 7*86400, Secure = false, HttpOnly = true, SameSite = "Lax" }
---  SetCookie('myCookie', new_cookie, t)
+  if session.isLoggedIn() then
+    local s = session.getEntry()
+    name = s.Name or "No Name"
+    expDate = s.ExpDate or 0 
+    return ("using active sessionId=" .. session.getKey() ..  " name=" .. name ..  ", expDate=" .. tostring(expDate) .. ", xxx")
   end
-  
+
+  local sessionId = session.getKey()
+
   -- Example to get parameger p. /one?p=123
   local p = HasParam('p') and GetParam('p') or [[not set. To set add '?p=123' to url]]
-  return [[This is dynamic content for page ]] .. GetPath() .. [[.<br>Parameter 'p' is ]] .. p .. [[<br>old_cookie = ]] .. old_cookie .. [[<br>new_cookie=]] .. new_cookie
+  return [[This is dynamic content for page ]] .. GetPath() .. [[<br>Parameter 'p' is ]] .. p .. [[<br>Not Logged in. Go to <a href="/login">Login Page</a><br>]]
 end
 
 

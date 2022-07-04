@@ -31,8 +31,8 @@ end
 function dynamic.page()
 
   -- Example to get parameger p. /one?p=123
-  local p = HasParam('p') and GetParam('p') or "not set"
-  return "This is dynamic content for page " .. GetPath() .. ". Parameter 'p' is " .. p
+  local p = HasParam('p') and GetParam('p') or [[not set. To set add '?p=123' to url]]
+  return [[This is dynamic content for page ]] .. GetPath() .. [[.<br>Parameter 'p' is ]] .. p
 end
 
 

@@ -5,12 +5,13 @@ redbean webserver examples. I'm just playing around, so take this all with a gra
 * Example 1 - Static pages
 * Example 2 - Dynamic content
 * Example 3 - Cookies
+* Example 4 - Sessions
 
 Links
 -----
 
-* [Redbean.dev](https://redbean.dev/)
-* [github - Redbean is part of the Cosmos project](https://github.com/jart/cosmopolitan). Redbean is part of the Cosmos project
+* [Redbean.dev](https://redbean.dev/). Redbean's home page
+* [github - Cosmopolitan](https://github.com/jart/cosmopolitan). Redbean is part of the Cosmopolitan project
 * [github - Fullmoon](https://github.com/pkulchenko/fullmoon). Fullmoon is an excellent web framework based on Redbean
 
 
