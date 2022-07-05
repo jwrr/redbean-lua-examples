@@ -39,14 +39,14 @@ function dynamic.page()
   if page:find('^/logout') then return session.page(true) end
 
 
-  if session.isLoggedIn() then
-    local s = session.getEntry()
+  if session.active() then
+    local s = session.entry()
     name = s.Name or "No Name"
     expDate = s.ExpDate or 0 
-    return ("using active sessionId=" .. session.getKey() ..  " name=" .. name ..  ", expDate=" .. tostring(expDate) .. [[. <a href="/logout">Logout</a>]])
+    return ("using active sessionId=" .. session.key() ..  " name=" .. name ..  ", expDate=" .. tostring(expDate) .. [[. <a href="/logout">Logout</a>]])
   end
 
-  local sessionId = session.getKey()
+  local sessionId = session.key()
 
   -- Example to get parameger p. /one?p=123
   local p = HasParam('p') and GetParam('p') or [[not set. To set add '?p=123' to url]]

@@ -1,18 +1,8 @@
 local session = {}
 
+local unix = require"unix"
 local cookie = require"cookie"
 
-
-
-session.explode = function(sep, s)
-  sep = sep or ' '
-  s = s or ''
-  local t = {}
-  for piece in string.gmatch(s, "[^" .. sep .. "]+") do
-    table.insert(t, piece)
-  end
-  return t
-end
 
 session.exec = function(cmd)
   local c = io.popen(cmd)
@@ -22,141 +12,104 @@ session.exec = function(cmd)
 end
 
 
-session.glob = function(glob_path, opt)
-  glob_path = glob_path or ''
-  opt = opt or ''
-  local one_file_per_line = session.exec('ls ' .. opt .. ' ' .. glob_path .. ' 2> /dev/null')
-  local file_table = session.explode('\r\n', one_file_per_line)
-  return file_table
+function session.fileExists(filename)
+  f = io.open(filename, "r")
+  if f == nil then
+    return false
+  end
+  f:close()
+  return true
 end
 
 
-
-session.file_exists = function(filename)
-  files = session.glob(filename)
-  return #files > 0
+function session.deleteFile(filename)
+  unix.unlink(filename)
+--   cmd = "rm -f " .. filename
+--   local command_output = session.exec(cmd)
 end
 
 
--- function session.createTable(filename)
---     db = sqlite3.open(filename)
---     db:busy_timeout(1000)
---     db:exec[[PRAGMA journal_mode=WAL]]
---     db:exec[[PRAGMA synchronous=NORMAL]]
---     db:exec[[
---       CREATE TABLE IF NOT EXISTS Session (
---         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
---         username TEXT,
---         expdate  INTEGER)
---     ]]
--- end
---
--- function session.setupSql(filename)
---   filename = filename or 'redbean.sqlite3'
---   if not db then
---     db = sqlite3.open(filename)
---     db:busy_timeout(1000)
---     db:exec[[PRAGMA journal_mode=WAL]]
---     db:exec[[PRAGMA synchronous=NORMAL]]
---
---     getSessionStmt = db:prepare[[
---       SELECT * FROM Session WHERE username = ?
---     ]]
---    end
--- end
---
--- local function GetBar(id)
---    if not getBarStmt then
---       Log(kLogWarn, 'prepare failed: ' .. db:errmsg())
---       return nil
---    end
---    getBarStmt:reset()
---    getBarStmt:bind(1, id)
---    for bar in getBarStmt:nrows() do
---       return bar
---    end
---    return nil
--- end
+function session.split(sep, s)
+  sep = sep or ' '
+  s = s or ''
+  local t = {}
+  for piece in string.gmatch(s, "[^" .. sep .. "]+") do
+    table.insert(t, piece)
+  end
+  return t
+end
 
 
-
--- GLOBAL_SESSION_TABLE = {}
-
-function session.getEntry(key)
+function session.entry(key)
   key = key or cookie.get() or 'invalid-key'
   f = io.open('sessions/session_' .. key, 'r')
   if f == nil then
     return {}
   end
   local multiLineString = f:read('*all')
-  local lines = session.explode('\r\n', multiLineString)
+  local lines = session.split('\r\n', multiLineString)
   local name = lines[1] or 'Missing Username'
   local exp_str= lines[2] or '0'
-  local expDate = tonumber(exp_str)
-  t = {Name = name, ExpDate = expDate}
---  t = GLOBAL_SESSION_TABLE[key] or {} -- read
+  local exp = tonumber(exp_str)
+  t = {Name = name, Exp = exp}
   return t or {}
 end
 
+
 function session.exists(key)
   key = key or cookie.get() or 'invalid-key'
-  return session.file_exists('sessions/session_' .. key)
---   return session.getEntry(key) and true or false
+  return session.fileExists('sessions/session_' .. key)
 end
 
-function session.getKey(key)
-  key = key or cookie.get() or 'invalid-key'
+
+function session.key()
+  local key = cookie.get() or 'invalid-key'
   return session.exists(key) and key or ''
 end
 
-function session.start(name, expPate)
+
+function session.start(name, exp)
   name = name or 'My Name'
-  expDate = expDate or GetDate() + 7*24*3600
+  exp = exp or GetDate() + 7*24*3600
   local key = cookie.set()
-  local t = {Name = name, ExpDate = expDate}
+  local t = {Name = name, Exp = exp}
   print("START SESSION: ")
   local f = io.open('sessions/session_' .. key, 'w')
   if f == nil then
     return
   end
   f:write(t.Name .. "\n")
-  f:write(tostring(t.ExpDate) .. "\n")
+  f:write(tostring(t.Exp) .. "\n")
   f:close()
---   GLOBAL_SESSION_TABLE[key] = t -- write
 end
 
 
-
-function session.delete(key)
+function session.stop(key)
   key = key or cookie.get() or 'invalid-key'
-  local s = session.getEntry(key)
-  -- GLOBAL_SESSION_TABLE[key] = nil -- delete
-  cmd = "rm -f sessions/session_" .. key
-  local command_output = session.exec(cmd)
+  local s = session.entry(key)
+  local filename = "sessions/session_" .. key
+  session.deleteFile(filename)
   return s
 end
 
-function session.isExpired(now, expDate)
-  return now >= expDate
+
+function session.exp(sess, now)
+  now = now or GetDate()
+  local exp = sess.Exp or 0
+  return now >= exp
 end
 
-function session.isLoggedIn()
-  if not cookie.exists() then
+
+function session.active(key)
+  key = key or cookie.get()
+
+  sess = session.entry(key)
+  if sess == {} then
     return false
   end
 
-  local sessionKey = cookie.get()
-  if not session.exists(sessionKey) then
-    return false
-  end
-
-  session_entry = session.getEntry(sessionKey)
-  if session_entry == {} then
-    return false
-  end
-
-  if session.isExpired(GetDate(), session_entry.ExpDate) then
-    session.delete(key)
+  if session.exp(sess) then
+    session.stop()
     return false
   end
 
@@ -172,7 +125,7 @@ end
 
 function session.page(logout)
 if logout then
-  session.delete()
+  session.stop()
   html = [[
   <div class="css-logout">You are now logged out. <a href="/">Home</a></div>
   ]]
