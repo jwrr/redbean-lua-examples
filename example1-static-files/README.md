@@ -13,7 +13,7 @@ The default redbean.com zip file has the following contents
 ./usr/share/ssl/root/many_files
 ```
 
-In this exampl redbean will serve static content.
+In this first example, redbean will serve static content.
 * Download redbean and make executable
 ```
 wget https://justine.lol/redbean/redbean-latest.com

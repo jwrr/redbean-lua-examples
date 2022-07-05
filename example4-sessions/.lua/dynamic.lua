@@ -35,13 +35,15 @@ end
 -- function that returns html string containing the webpage content
 function dynamic.page()
   page = GetPath()
-  if page:find('^/login') then return session.page() end
+  if page:find('^/login') then return session.page(false) end
+  if page:find('^/logout') then return session.page(true) end
+
 
   if session.isLoggedIn() then
     local s = session.getEntry()
     name = s.Name or "No Name"
     expDate = s.ExpDate or 0 
-    return ("using active sessionId=" .. session.getKey() ..  " name=" .. name ..  ", expDate=" .. tostring(expDate) .. ", xxx")
+    return ("using active sessionId=" .. session.getKey() ..  " name=" .. name ..  ", expDate=" .. tostring(expDate) .. [[. <a href="/logout">Logout</a>]])
   end
 
   local sessionId = session.getKey()

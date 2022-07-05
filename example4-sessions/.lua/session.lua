@@ -131,7 +131,7 @@ function session.delete(key)
   key = key or cookie.get() or 'invalid-key'
   local s = session.getEntry(key)
   -- GLOBAL_SESSION_TABLE[key] = nil -- delete
-  cmd = "rm -f session_" .. key
+  cmd = "rm -f sessions/session_" .. key
   local command_output = session.exec(cmd)
   return s
 end
@@ -170,7 +170,14 @@ function session.validPassword(password)
 end
 
 
-function session.page()
+function session.page(logout)
+if logout then
+  session.delete()
+  html = [[
+  <div class="css-logout">You are now logged out. <a href="/">Home</a></div>
+  ]]
+  return html
+end
 
 local username = HasParam('username') and GetParam('username') or ""
 local password = HasParam('password') and GetParam('password') or ""
