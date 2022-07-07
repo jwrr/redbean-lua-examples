@@ -6,6 +6,7 @@ redbean webserver examples. I'm just playing around, so take this all with a gra
 * Example 2 - Dynamic content
 * Example 3 - Cookies
 * Example 4 - Sessions
+* Example 5 - Accounts
 
 Links
 -----

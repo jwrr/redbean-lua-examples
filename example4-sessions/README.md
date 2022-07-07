@@ -13,7 +13,7 @@ The default redbean.com zip file has the following contents
 ./usr/share/ssl/root/many_files
 ```
 
-In this example 4, sessions that use the cookies are added to example 3.  The '.lua/sessions.lua'
+In this example 4, sessions that use the cookies are added to example 3.  The '.lua/session.lua'
 module is added to manage the sessions.  The sessions in this example use the file-based
 approach, similar to PHP's approach.
 
