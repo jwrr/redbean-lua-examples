@@ -26,6 +26,24 @@ testPassword("Stephen Hawking", "Quantum")
 testPassword("Bob Gibson", "Cards")
 testPassword("Bob Gibson", "Cardsxx")
 
+function testDelete(name, password)
+  if account.delete(name, password) then
+    print('SUCCESS Deleting account', name, password)
+  else
+    print('FAIL Deleting account', name, password)
+  end
+end
+
+testDelete("JanexGoodall", "Chimpanzee")
+testDelete("Jane Goodall", "Chimqanzee")
+testDelete("Jane Goodall", "Chimpanzee")
+testDelete("Jim Hawkins", "Quantum")
+testDelete("Stephen Hawking", "quantum")
+testDelete("Stephen Hawking", "Quantum")
+testDelete("Bob Gibson", "Cardsxx")
+testDelete("Robert Gibson", "Cards")
+testDelete("Bob Gibson", "Cards")
+
 -- 
 -- 
 -- -- dynamic.lua is in .lua folder. It defines three functions,

@@ -90,15 +90,17 @@ function account.verify(name, password, email, dbname, tablename)
 
   password = password or ''
   if password == '' then return false end
+  
+  email = email or ""
 
   local nonce = ""
   passwordHash = EncodeBase64(Sha512(nonce .. password))
   dbname = dbname or "redbean.sql"
   tablename = tablename or "accounts"
-  properties = properties or {}
   tablename = "accounts"
   query = [[SELECT * FROM ]] .. tablename  .. [[ WHERE name = "]] .. name .. [[";]]
   local db = sqlite3.open(dbname)
+  account.GOODPASSWORD = false
   db:exec(query, account.verifypassword_callback, password)
   db:close()
   
@@ -109,7 +111,28 @@ end
 function account.update()
 end
 
-function account.delete()
+
+function account.delete(name, password, email, dbname, tablename)
+  dbname = dbname or "redbean.sql"
+  tablename = tablename or "accounts"
+
+  name = account.clean(name)
+  if name == '' then return false end
+
+  password = password or ''
+  if password == '' then return false end
+
+  email = email or ""
+
+  local goodPassword = account.verify(name, password, email, dbname, tablename)
+  if not goodPassword then return false end
+  
+  tablename = "accounts"
+  query = [[DELETE FROM ]] .. tablename  .. [[ WHERE name = "]] .. name .. [[";]]
+  local db = sqlite3.open(dbname)
+  local result = db:exec(query)
+  db:close()
+  return result == sqlite3.OK
 end
 
 

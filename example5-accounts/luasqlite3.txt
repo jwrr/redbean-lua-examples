@@ -464,10 +464,10 @@ db:exec
         db:exec(sql[,func[,udata]])
         db:execute(sql[,func[,udata]])
 
-Compiles and executes the SQL statement(s) given in string sql. The statements a
-re simply executed one after the other and not stored. The function returns sqli
-te3.OK on success or else a numerical error code (see Numerical error and result
- codes).
+Compiles and executes the SQL statement(s) given in string sql. The statements are 
+simply executed one after the other and not stored. The function returns sqlite3.OK 
+on success or else a numerical error code (see Numerical error and result
+codes).
 
 If one or more of the SQL statements are queries, then the callback function spe
 cified in func is invoked once for each row of the query result (if func is nil,
