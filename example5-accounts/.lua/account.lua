@@ -4,7 +4,7 @@ sqlite3 = require 'lsqlite3'
 
 function account.init(dbname, tablename)
   dbname = "redbean.sql"
-  tablename = tablename or "accounts"
+  tablename = tablename or "account"
   query= [[CREATE TABLE IF NOT EXISTS ]] .. tablename .. [[(
     id       INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     name     TEXT,
@@ -49,11 +49,11 @@ function account.create(name, password, email, dbname, tablename)
   local nonce = account.randomstring(32)
   local passwordHash = EncodeBase64(Sha512(nonce .. password))
   dbname = dbname or "redbean.sql"
-  tablename = tablename or "accounts"
+  tablename = tablename or "account"
   properties = properties or {}
-  tablename = "accounts"
+  tablename = "account"
   query = [[
-    INSERT INTO accounts (name, password, nonce, email) VALUES(  "]] ..
+    INSERT INTO account (name, password, nonce, email) VALUES(  "]] ..
     name .. [[", "]] ..
     passwordHash .. [[", "]] ..
     nonce .. [[", "]] ..
@@ -96,8 +96,8 @@ function account.verify(name, password, email, dbname, tablename)
   local nonce = ""
   passwordHash = EncodeBase64(Sha512(nonce .. password))
   dbname = dbname or "redbean.sql"
-  tablename = tablename or "accounts"
-  tablename = "accounts"
+  tablename = tablename or "account"
+  tablename = "account"
   query = [[SELECT * FROM ]] .. tablename  .. [[ WHERE name = "]] .. name .. [[";]]
   local db = sqlite3.open(dbname)
   account.GOODPASSWORD = false
@@ -108,13 +108,9 @@ function account.verify(name, password, email, dbname, tablename)
 end
 
 
-function account.update()
-end
-
-
-function account.delete(name, password, email, dbname, tablename)
+function account.update(name, password, email, dbname, tablename)
   dbname = dbname or "redbean.sql"
-  tablename = tablename or "accounts"
+  tablename = tablename or "account"
 
   name = account.clean(name)
   if name == '' then return false end
@@ -127,7 +123,36 @@ function account.delete(name, password, email, dbname, tablename)
   local goodPassword = account.verify(name, password, email, dbname, tablename)
   if not goodPassword then return false end
   
-  tablename = "accounts"
+  query = [[UPDATE ]] .. tablename .. [[ SET ]] ..
+    [[email    = ']] .. email    .. [[' ]] ..
+    [[WHERE name = ']] .. name .. [[';]]
+
+--     [[password = ']] .. password .. [[', ]] ..
+--     [[nonce    = ']] .. nonce    .. [[', ]] ..
+
+    
+  local db = sqlite3.open(dbname)
+  local result = db:exec(query)
+  db:close()
+  return result == sqlite3.OK
+end
+
+
+function account.delete(name, password, email, dbname, tablename)
+  dbname = dbname or "redbean.sql"
+  tablename = tablename or "account"
+
+  name = account.clean(name)
+  if name == '' then return false end
+
+  password = password or ''
+  if password == '' then return false end
+
+  email = email or ""
+
+  local goodPassword = account.verify(name, password, email, dbname, tablename)
+  if not goodPassword then return false end
+  
   query = [[DELETE FROM ]] .. tablename  .. [[ WHERE name = "]] .. name .. [[";]]
   local db = sqlite3.open(dbname)
   local result = db:exec(query)

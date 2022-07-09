@@ -26,6 +26,28 @@ testPassword("Stephen Hawking", "Quantum")
 testPassword("Bob Gibson", "Cards")
 testPassword("Bob Gibson", "Cardsxx")
 
+function testUpdate(name, password, email)
+  if account.update(name, password, email) then
+    print('SUCCESS Updating account', name, password, email)
+  else
+    print('FAIL Updating account', name, password , email)
+  end
+end
+
+
+-- need old password
+testUpdate("JanexGoodall", "Chimpanzee", "jane@gmail.com")
+testUpdate("Jane Goodall", "Chimqanzee", "jane@gmail.com")
+testUpdate("Jane Goodall", "Chimpanzee", "jane@gmail.com")
+testUpdate("Jim Hawkins", "Quantum", "thehawk@yahoo.com")
+testUpdate("Stephen Hawking", "quantum", "thehawk@yahoo.com")
+testUpdate("Stephen Hawking", "Quantum", "thehawk@yahoo.com")
+testUpdate("Bob Gibson", "Cardsxx", "gibby@outlook.com")
+testUpdate("Robert Gibson", "Cards", "gibby@outlook.com")
+testUpdate("Bob Gibson", "Cards", "gibby@outlook.com")
+
+
+
 function testDelete(name, password)
   if account.delete(name, password) then
     print('SUCCESS Deleting account', name, password)
@@ -34,15 +56,15 @@ function testDelete(name, password)
   end
 end
 
-testDelete("JanexGoodall", "Chimpanzee")
-testDelete("Jane Goodall", "Chimqanzee")
-testDelete("Jane Goodall", "Chimpanzee")
-testDelete("Jim Hawkins", "Quantum")
-testDelete("Stephen Hawking", "quantum")
-testDelete("Stephen Hawking", "Quantum")
-testDelete("Bob Gibson", "Cardsxx")
-testDelete("Robert Gibson", "Cards")
-testDelete("Bob Gibson", "Cards")
+-- testDelete("JanexGoodall", "Chimpanzee")
+-- testDelete("Jane Goodall", "Chimqanzee")
+-- testDelete("Jane Goodall", "Chimpanzee")
+-- testDelete("Jim Hawkins", "Quantum")
+-- testDelete("Stephen Hawking", "quantum")
+-- testDelete("Stephen Hawking", "Quantum")
+-- testDelete("Bob Gibson", "Cardsxx")
+-- testDelete("Robert Gibson", "Cards")
+-- testDelete("Bob Gibson", "Cards")
 
 -- 
 -- 
