@@ -55,8 +55,8 @@ end
 
 
 -- function that returns html string containing a custom error page
-dynamic.err404 = {}
-function dynamic.err404.page()
+dynamic.err404 = require"custom_err404"
+dynamic.err404.page = dynamic.err404.page or function()
   return "Error 404: Not Found: " .. GetPath()
 end
 

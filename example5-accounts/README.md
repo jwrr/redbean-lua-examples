@@ -14,8 +14,11 @@ The default redbean.com zip file has the following contents
 ```
 
 In this example 5, accounts that use sqlite3 are added to example 4.
-The '.lua/account.lua' module is added to manage the accountss.  The accounts 
+The '.lua/account.lua' module is added to manage the accounts.  The accounts 
 in this example are simple, with a username, hashed password, and email.
+
+Also in this example, a custom err404 page is added using '.lua/custom_err404.lua'.
+You can see it by going to and invalid page such as "/asdfasdf.html".
 
 * Download redbean and make it executable.  You can re-use example 1's redbean.
 ```

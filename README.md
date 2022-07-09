@@ -9,6 +9,7 @@ example and not miss out on anything.
 * Example 3 - Cookies
 * Example 4 - Sessions
 * Example 5 - Accounts
+* Example 5 - Custom 404
 
 Links
 -----
