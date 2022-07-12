@@ -66,6 +66,10 @@ end
 -- testDelete("Robert Gibson", "Cards")
 -- testDelete("Bob Gibson", "Cards")
 
+account.create("Lucy Ball", "Ricky")
+
+
+
 -- 
 -- 
 -- -- dynamic.lua is in .lua folder. It defines three functions,

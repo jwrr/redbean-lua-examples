@@ -22,7 +22,7 @@ chmod 755 redbean.com
 ls -l
 ```
 
-* If you get an error about CIL then
+* If you get an error about CIL then: Cannot open assembly './redbean.com': File does not contain a valid CIL image.
 ```
 sudo sh -c "echo ':APE:M::MZqFpD::/bin/sh:' >/proc/sys/fs/binfmt_misc/register"
 ```

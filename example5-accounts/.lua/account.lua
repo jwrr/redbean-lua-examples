@@ -84,7 +84,7 @@ function account.verifypassword_callback(password,cols,values,names)
 end
 
 
-function account.verify(name, password, email, dbname, tablename)
+function account.verify(name, password, dbname, tablename)
   name = account.clean(name)
   if name == '' then return false end
 
@@ -120,7 +120,7 @@ function account.update(name, password, email, dbname, tablename)
 
   email = email or ""
 
-  local goodPassword = account.verify(name, password, email, dbname, tablename)
+  local goodPassword = account.verify(name, password, dbname, tablename)
   if not goodPassword then return false end
   
   query = [[UPDATE ]] .. tablename .. [[ SET ]] ..
@@ -150,7 +150,7 @@ function account.delete(name, password, email, dbname, tablename)
 
   email = email or ""
 
-  local goodPassword = account.verify(name, password, email, dbname, tablename)
+  local goodPassword = account.verify(name, password, dbname, tablename)
   if not goodPassword then return false end
   
   query = [[DELETE FROM ]] .. tablename  .. [[ WHERE name = "]] .. name .. [[";]]

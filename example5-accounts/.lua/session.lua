@@ -2,6 +2,7 @@ local session = {}
 
 local unix = require"unix"
 local cookie = require"cookie"
+local account = require"account"
 
 
 session.exec = function(cmd)
@@ -118,8 +119,8 @@ function session.active(key)
 end
 
 
-function session.validPassword(password)
-  return true -- FIXME
+function session.validPassword(username, password)
+  return account.verify(username, password)
 end
 
 
@@ -135,7 +136,7 @@ end
 local username = HasParam('username') and GetParam('username') or ""
 local password = HasParam('password') and GetParam('password') or ""
 
-if username ~= "" and session.validPassword(password) then
+if username ~= "" and session.validPassword(username, password) then
   session.start(username)
   -- FIXME ServeRedirect(303, "/") -- 303 redirects are for handling form submissions
   return [[You are now logged in!!! <a href="/">Home</a>]]
