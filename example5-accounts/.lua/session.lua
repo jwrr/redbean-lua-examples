@@ -124,14 +124,7 @@ function session.validPassword(username, password)
 end
 
 
-function session.page(logout)
-if logout then
-  session.stop()
-  html = [[
-  <div class="css-logout">You are now logged out. <a href="/">Home</a></div>
-  ]]
-  return html
-end
+function session.loginPage()
 
 local username = HasParam('username') and GetParam('username') or ""
 local password = HasParam('password') and GetParam('password') or ""
@@ -156,6 +149,14 @@ html = [[
 ]]
 
 return html
+end
+
+function session.logoutPage()
+  session.stop()
+  html = [[
+  <div class="css-logout">You are now logged out. <a href="/">Home</a></div>
+  ]]
+  return html
 end
 
 

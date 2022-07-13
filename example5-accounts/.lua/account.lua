@@ -79,7 +79,7 @@ function account.verifypassword_callback(password,cols,values,names)
 
   local passwordHash = EncodeBase64(Sha512(nonceFromDb .. password))
   account.GOODPASSWORD = passwordHash == passwordFromDb
-  
+
   return 0
 end
 
@@ -90,7 +90,7 @@ function account.verify(name, password, dbname, tablename)
 
   password = password or ''
   if password == '' then return false end
-  
+
   email = email or ""
 
   local nonce = ""
@@ -103,8 +103,8 @@ function account.verify(name, password, dbname, tablename)
   account.GOODPASSWORD = false
   db:exec(query, account.verifypassword_callback, password)
   db:close()
-  
-  return account.GOODPASSWORD  
+
+  return account.GOODPASSWORD
 end
 
 
@@ -122,7 +122,7 @@ function account.update(name, password, email, dbname, tablename)
 
   local goodPassword = account.verify(name, password, dbname, tablename)
   if not goodPassword then return false end
-  
+
   query = [[UPDATE ]] .. tablename .. [[ SET ]] ..
     [[email    = ']] .. email    .. [[' ]] ..
     [[WHERE name = ']] .. name .. [[';]]
@@ -130,7 +130,7 @@ function account.update(name, password, email, dbname, tablename)
 --     [[password = ']] .. password .. [[', ]] ..
 --     [[nonce    = ']] .. nonce    .. [[', ]] ..
 
-    
+
   local db = sqlite3.open(dbname)
   local result = db:exec(query)
   db:close()
@@ -152,7 +152,7 @@ function account.delete(name, password, email, dbname, tablename)
 
   local goodPassword = account.verify(name, password, dbname, tablename)
   if not goodPassword then return false end
-  
+
   query = [[DELETE FROM ]] .. tablename  .. [[ WHERE name = "]] .. name .. [[";]]
   local db = sqlite3.open(dbname)
   local result = db:exec(query)
@@ -166,6 +166,40 @@ end
 
 function account.get(name)
 end
+
+
+function account.joinPage()
+
+-- if session.active() then
+--   html = "Hello. No need to join... You're already logged in'"
+-- end
+local username = HasParam('username') and GetParam('username') or ''
+local password = HasParam('password') and GetParam('password') or ''
+local email    = HasParam('email')    and GetParam('email')    or ''
+
+if username ~= "" and session.validPassword(username, password) then
+  session.start(username)
+  -- FIXME ServeRedirect(303, "/") -- 303 redirects are for handling form submissions
+  return [[You are now logged in!!! <a href="/">Home</a>]]
+end
+
+html = [[
+ <form action="/join" method="post">
+  <div class="css-login-form">
+    <label for="username">Username</label>
+    <input type="text" placeholder="Enter Username" name="username" required>
+    <label for="email">Email</label>
+    <input type="text" placeholder="Enter Email" name="email" required>
+    <label for="password">Password</label>
+    <input type="password" placeholder="Enter Password" name="password" required>
+    <button type="submit">Login</button>
+  </div>
+</form>
+]]
+
+return html
+end
+
 
 
 

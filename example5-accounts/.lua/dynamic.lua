@@ -20,11 +20,14 @@ function dynamic.isValidDynamicPath()
   -- This pattern matches the home page, '/'
   if path:find('^/$') then return true end
   
-  -- This pattern matches any path starting with '/one'
+  -- This pattern matches any path starting with '/login'
   if path:find('^/login') then return true end
   
-  -- This pattern matches any path starting with '/two'
+  -- This pattern matches any path starting with '/logout'
   if path:find('^/logout') then return true end
+  
+  -- This pattern matches any path starting with '/join'
+  if path:find('^/join') then return true end
   
   -- For this example, any other path is not valid
   return false;
@@ -35,22 +38,28 @@ end
 -- function that returns html string containing the webpage content
 function dynamic.page()
   page = GetPath()
-  if page:find('^/login') then return session.page(false) end
-  if page:find('^/logout') then return session.page(true) end
+  if page:find('^/login')  then return session.loginPage() end
+  if page:find('^/logout') then return session.logoutPage() end
+  if page:find('^/join')   then return account.joinPage() end
 
 
   if session.active() then
     local s = session.entry()
     name = s.Name or "No Name"
     expDate = s.ExpDate or 0 
-    return ("using active sessionId=" .. session.key() ..  " name=" .. name ..  ", expDate=" .. tostring(expDate) .. [[. <a href="/logout">Logout</a>]])
+    return ("using active sessionId=" .. session.key() ..  " name=" .. name ..  ", expDate=" .. tostring(expDate) .. 
+      [[. <a href="/logout">Logout</a>]] ..
+      [[  <a href="/join">Join</a>]])
   end
 
   local sessionId = session.key()
 
   -- Example to get parameger p. /one?p=123
   local p = HasParam('p') and GetParam('p') or [[not set. To set add '?p=123' to url]]
-  return [[This is dynamic content for page ]] .. GetPath() .. [[<br>Parameter 'p' is ]] .. p .. [[<br>Not Logged in. Go to <a href="/login">Login Page</a><br>]]
+  return [[This is dynamic content for page ]] .. GetPath() .. [[<br>Parameter 'p' is ]] .. p .. 
+    [[<br>Not Logged in. Go to <a href="/login">Login Page</a><br>]] ..
+    [[  <a href="/join">Join</a>]]
+
 end
 
 
